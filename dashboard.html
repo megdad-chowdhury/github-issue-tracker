@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub | Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.css"
+        integrity="sha512-GmZYQ9SKTnOea030Tbiat0Y+jhnYLIpsGAe6QTnToi8hI2nNbVMETHeK4wm4MuYMQdrc38x+sX77+kVD01eNsQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body class="bg-gray-50 font-sans min-h-screen">
+
+    <!-- Top Navbar -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 px-8 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <div class="flex items-center gap-3">
+                <img src="./assets/github-logo.png" alt="GitHub-Logo" class="w-10 h-10">
+                <h1 class="text-xl font-bold text-gray-900">GitHub Issues Tracker</h1>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm cursor-pointer"></i>
+                    <input 
+                        type="text" 
+                        id="search-input"
+                        placeholder="Search issues..." 
+                        class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64 bg-gray-50"
+                    >
+                </div>
+
+                <button class="bg-indigo-600 hover:bg-indigo-700 cursor-pointer text-white font-medium px-4 py-2 rounded-lg text-sm flex items-center gap-2 shadow-sm transition">
+                    <i class="fa-solid fa-plus"></i> New Issue
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <div class="bg-white p-2 rounded-xl border border-gray-200 flex items-center gap-2 shadow-sm mb-6 w-full">
+            <button id="tab-all"
+                class="bg-indigo-600 text-white px-10 py-2.5 rounded-lg font-medium text-sm cursor-pointer transition shadow-sm">
+                All
+            </button>
+            <button id="tab-open"
+                class="text-gray-600 border border-gray-200 hover:bg-gray-50 px-10 py-2.5 rounded-lg font-medium text-sm cursor-pointer transition">
+                Open
+            </button>
+            <button id="tab-closed"
+                class="text-gray-600 border border-gray-200 hover:bg-gray-50 px-10 py-2.5 rounded-lg font-medium text-sm cursor-pointer transition">
+                Closed
+            </button>
+        </div>
+    
+        <div class="bg-white border border-gray-200 rounded-xl px-10 py-4 mb-8 shadow-sm flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center">
+                    <img src="./assets/Aperture.png" alt="">
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        <span id="total-issue-count">50</span> Issues
+                    </h2>
+                    <p class="text-sm text-gray-500">Track and manage your project issues</p>
+                </div>
+            </div>
+    
+            <div class="flex items-center gap-6 text-sm font-medium">
+                <div class="flex items-center gap-2 text-gray-700">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    <span>Open</span>
+                </div>
+                <div class="flex items-center gap-2 text-gray-700">
+                    <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
+                    <span>Closed</span>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Issues Container (পরের ধাপে কার্ডগুলো এখানে ডায়নামিক্যালি দেখাব) -->
+        <div class=" gap-6 shadow-sm rounded-lg p-6">
+           
+            <div id="issues-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+                <!-- Sample Issue Card -->
+            
+                
+
+                
+            </div>
+        </div>
+        
+        
+        <!-- Modal -->
+        <dialog id="issue_modal" class="modal">
+            <div class="modal-box max-w-2xl bg-white p-8 rounded-3xl shadow-2xl relative">
+        
+                <h3 id="modal-title" class="text-2xl font-bold text-slate-800 mb-3">
+                    Fix broken image uploads
+                </h3>
+        
+                <div class="flex items-center gap-2 text-sm text-slate-500 mb-5">
+                    <span id="modal-status" class="bg-emerald-600 text-white font-medium text-xs px-3 py-1 rounded-full">
+                        Opened
+                    </span>
+                    <span>•</span>
+                    <span>Opened by <strong id="modal-author" class="text-slate-600 font-medium">Fahim Ahmed</strong></span>
+                    <span>•</span>
+                    <span id="modal-date">22/02/2026</span>
+                </div>
+        
+                <div id="modal-labels" class="flex items-center gap-2 mb-6">
+                    <span
+                        class="bg-red-50 text-red-500 text-xs font-semibold px-3 py-1 rounded-full border border-red-200 flex items-center gap-1.5">
+                        <i class="fa-regular fa-face-smile text-xs"></i> BUG
+                    </span>
+                    <span
+                        class="bg-amber-50 text-amber-600 text-xs font-semibold px-3 py-1 rounded-full border border-amber-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-life-ring text-xs"></i> HELP WANTED
+                    </span>
+                </div>
+        
+                <p id="modal-description" class="text-slate-500 text-base leading-relaxed mb-6">
+                    The navigation menu doesn't collapse properly on mobile devices. Need to fix the responsive behavior.
+                </p>
+        
+                <div class="bg-slate-50 p-5 rounded-2xl flex items-center justify-between mb-8">
+                    <div>
+                        <span class="text-slate-400 text-sm block mb-1">Assignee:</span>
+                        <h4 id="modal-assignee" class="text-slate-800 font-bold text-base">Fahim Ahmed</h4>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 text-sm block mb-1">Priority:</span>
+                        <span id="modal-priority"
+                            class="bg-red-500 text-white font-bold text-xs px-4 py-1.5 rounded-full uppercase tracking-wider inline-block">
+                            HIGH
+                        </span>
+                    </div>
+                </div>
+        
+                <div class="flex justify-end">
+                    <form method="dialog">
+                        <button
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm cursor-pointer transition shadow-sm">
+                            Close
+                        </button>
+                    </form>
+                </div>
+        
+            </div>
+        
+            <form method="dialog" class="modal-backdrop bg-slate-900/40 backdrop-blur-xs">
+                <button>close</button>
+            </form>
+        </dialog>
+        </main>
+    <script src="./script.js"></script>
+</body>
+</html>
