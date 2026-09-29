@@ -74,6 +74,74 @@ const getLabelStyle = (label) => {
     };
 };
 
+const openIssueModal = async (id) => {
+    if (!issueModal) return;
+
+    // লোডিং অবস্থা দেখানো
+    modalTitle.innerText = "Loading details...";
+    modalDescription.innerText = "Please wait while we fetch issue details.";
+    modalLabels.innerHTML = "";
+    
+    // মডালটি ওপেন করা
+    issueModal.showModal();
+
+    try {
+        // API থেকে নির্দিষ্ট ID দিয়ে ডাটা আনা
+        const res = await fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`);
+        const data = await res.json();
+        const issue = data.data || data;
+
+        // ১. টেক্সট ডাটা আপডেট করা
+        modalTitle.innerText = issue.title;
+        modalAuthor.innerText = issue.author || 'Unknown';
+        modalDate.innerText = new Date(issue.createdAt).toLocaleDateString();
+        modalDescription.innerText = issue.description;
+
+        if (modalAssignee) {
+            modalAssignee.innerText = issue.assignee || 'Unassigned';
+        }
+
+        // ২. Status ডায়নামিক স্টাইলিং
+        const isOpen = issue.status.toLowerCase() === 'open';
+        modalStatus.innerText = isOpen ? 'Opened' : 'Closed';
+        modalStatus.className = `${isOpen ? 'bg-emerald-600' : 'bg-purple-600'} text-white font-medium text-xs px-3 py-1 rounded-full`;
+
+        // ৩. Priority ডায়নামিক স্টাইলিং
+        if (modalPriority) {
+            modalPriority.innerText = issue.priority;
+            let priorityBg = 'bg-gray-500';
+
+            if (issue.priority.toLowerCase() === 'high') {
+                priorityBg = 'bg-red-500';
+            } else if (issue.priority.toLowerCase() === 'medium') {
+                priorityBg = 'bg-amber-500';
+            } else if (issue.priority.toLowerCase() === 'low') {
+                priorityBg = 'bg-blue-500';
+            }
+
+            modalPriority.className = `${priorityBg} text-white font-bold text-xs px-4 py-1.5 rounded-full uppercase tracking-wider inline-block`;
+        }
+
+        // ৪. Dynamic Labels
+        if (modalLabels) {
+            modalLabels.innerHTML = issue.labels.map(label => {
+                const style = getLabelStyle(label);
+                return `
+                    <span class="${style.bgClass} text-xs font-semibold px-3 py-1 rounded-full border flex items-center gap-1.5 uppercase">
+                        <i class="${style.iconClass}"></i>
+                        <span>${label}</span>
+                    </span>
+                `;
+            }).join('');
+        }
+
+    } catch (error) {
+        console.error("Error fetching issue details:", error);
+        modalTitle.innerText = "Error Loading Details";
+        modalDescription.innerText = "Failed to load issue information. Please try again.";
+    }
+};
+
 
 const displayIssues = (issues) => {
     issuesContainer.innerHTML = "";
@@ -144,6 +212,12 @@ const displayIssues = (issues) => {
             </div>
         `;
 
+        // displayIssues ফাংশনের ভেতরে:
+
+        card.addEventListener('click', () => {
+        openIssueModal(issue.id); 
+        });
+
         issuesContainer.appendChild(card);
     });
 };
@@ -162,32 +236,6 @@ const loadIssues = () => {
 };
 
 loadIssues();
-
-// Tab Filtering & Active State Function
-// const filterIssues = (status, selectedTab) => {
-//     // ১. সব বাটন থেকে Active Class সরিয়ে ডিফল্ট ক্লাসে নেওয়া
-//     [tabAll, tabOpen, tabClosed].forEach(tab => {
-//         tab.classList.remove('btn-primary', 'bg-indigo-600', 'text-white');
-//         tab.classList.add('bg-gray-100', 'text-gray-600');
-//     });
-
-//     // ২. সিলেক্ট হওয়া বাটনে Active Class যোগ করা
-//     selectedTab.classList.remove('bg-gray-100', 'text-gray-600');
-//     selectedTab.classList.add('bg-indigo-600', 'text-white');
-
-//     // ৩. ডাটা ফিল্টার করে রেন্ডার করা
-//     if (status === 'all') {
-//         displayIssues(allIssues);
-//     } else {
-//         const filtered = allIssues.filter(issue => issue.status.toLowerCase() === status);
-//         displayIssues(filtered);
-//     }
-// };
-
-// // বাটনগুলোতে Event Listener বসানো
-// tabAll.addEventListener('click', () => filterIssues('all', tabAll));
-// tabOpen.addEventListener('click', () => filterIssues('open', tabOpen));
-// tabClosed.addEventListener('click', () => filterIssues('closed', tabClosed));
 
 
 // Tab Filtering Function
