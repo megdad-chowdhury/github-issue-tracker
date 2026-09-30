@@ -15,5 +15,5 @@
     Ans: An arrow function is a shorter way to write a function. Example: const add = (a, b) => a + b;
 
   - 5️⃣ What are template literals?
-    Ans: Template literals use backticks (` `) and allow us to easily add variables inside a string using ${}.
+    Ans: Template literals use backticks ` ` and allow us to easily add variables inside a string using ${}.
 
