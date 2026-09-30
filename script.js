@@ -32,7 +32,6 @@ const showSpinner = () => {
 };
 
 
-// Label Color and FontAwesome Icon Generator
 const getLabelStyle = (label) => {
     const l = label.toLowerCase().trim();
     
@@ -67,7 +66,7 @@ const getLabelStyle = (label) => {
         };
     }
     
-    // Default Style (যদি ওপরের কোনোটার সাথে না মেলে)
+
     return {
         bgClass: 'bg-gray-100 text-gray-600 border-gray-200',
         iconClass: 'fa-solid fa-tag text-gray-500'
@@ -77,21 +76,17 @@ const getLabelStyle = (label) => {
 const openIssueModal = async (id) => {
     if (!issueModal) return;
 
-    // লোডিং অবস্থা দেখানো
     modalTitle.innerText = "Loading details...";
     modalDescription.innerText = "Please wait while we fetch issue details.";
     modalLabels.innerHTML = "";
     
-    // মডালটি ওপেন করা
     issueModal.showModal();
 
     try {
-        // API থেকে নির্দিষ্ট ID দিয়ে ডাটা আনা
         const res = await fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`);
         const data = await res.json();
         const issue = data.data || data;
 
-        // ১. টেক্সট ডাটা আপডেট করা
         modalTitle.innerText = issue.title;
         modalAuthor.innerText = issue.author || 'Unknown';
         modalDate.innerText = new Date(issue.createdAt).toLocaleDateString();
@@ -101,12 +96,11 @@ const openIssueModal = async (id) => {
             modalAssignee.innerText = issue.assignee || 'Unassigned';
         }
 
-        // ২. Status ডায়নামিক স্টাইলিং
+
         const isOpen = issue.status.toLowerCase() === 'open';
         modalStatus.innerText = isOpen ? 'Opened' : 'Closed';
         modalStatus.className = `${isOpen ? 'bg-emerald-600' : 'bg-purple-600'} text-white font-medium text-xs px-3 py-1 rounded-full`;
 
-        // ৩. Priority ডায়নামিক স্টাইলিং
         if (modalPriority) {
             modalPriority.innerText = issue.priority;
             let priorityBg = 'bg-gray-500';
@@ -122,7 +116,6 @@ const openIssueModal = async (id) => {
             modalPriority.className = `${priorityBg} text-white font-bold text-xs px-4 py-1.5 rounded-full uppercase tracking-wider inline-block`;
         }
 
-        // ৪. Dynamic Labels
         if (modalLabels) {
             modalLabels.innerHTML = issue.labels.map(label => {
                 const style = getLabelStyle(label);
@@ -212,7 +205,6 @@ const displayIssues = (issues) => {
             </div>
         `;
 
-        // displayIssues ফাংশনের ভেতরে:
 
         card.addEventListener('click', () => {
         openIssueModal(issue.id); 
@@ -238,13 +230,11 @@ const loadIssues = () => {
 loadIssues();
 
 
-// Tab Filtering Function
 const filterIssues = (status, selectedTab) => {
-    currentStatus = status; // বর্তমানে কোন ট্যাবে আছি তা সেভ রাখা
+    currentStatus = status; 
 
     searchInput.value = '';
 
-    // সব বাটন থেকে Active Class সরানো এবং বর্তমান বাটনে Active Class যোগ
     [tabAll, tabOpen, tabClosed].forEach(tab => {
         tab.classList.remove('bg-indigo-600', 'text-white');
         tab.classList.add('bg-gray-100', 'text-gray-600');
@@ -253,7 +243,6 @@ const filterIssues = (status, selectedTab) => {
     selectedTab.classList.remove('bg-gray-100', 'text-gray-600');
     selectedTab.classList.add('bg-indigo-600', 'text-white');
 
-    // সার্চ ফিল্টার রানিং করার জন্য Function কল করা
     applyFilters();
 };
 
@@ -261,26 +250,22 @@ tabAll.addEventListener('click', () => filterIssues('all', tabAll));
 tabOpen.addEventListener('click', () => filterIssues('open', tabOpen));
 tabClosed.addEventListener('click', () => filterIssues('closed', tabClosed));
 
-// ট্যাব এবং সার্চ দুইটি একসাথে ফিল্টার করার জন্য মূল ফাংশন
 const applyFilters = () => {
     const searchText = searchInput.value.toLowerCase().trim();
 
     const filtered = allIssues.filter(issue => {
-        // ১. ট্যাবের ফিল্টার চেক
+        
         const matchesStatus = currentStatus === 'all' || issue.status.toLowerCase() === currentStatus;
 
-        // ২. সার্চ ইনপুটের টেক্সট চেক (Title বা Description)
         const matchesSearch = issue.title.toLowerCase().includes(searchText) || 
                               issue.description.toLowerCase().includes(searchText);
 
-        // দুটি শর্তই পূরণ হলে ডাটা ফিল্টার হবে
         return matchesStatus && matchesSearch;
     });
 
     displayIssues(filtered);
 };
 
-// Search Input Event Listener
 searchInput.addEventListener('input', applyFilters);
 
 
